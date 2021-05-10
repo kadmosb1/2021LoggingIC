@@ -15,6 +15,7 @@ public class Invoice {
     public void printInvoice (Customer customer, ArrayList<InvoiceLine> lines) {
 
         double totalPrice = 0.0;
+        Logging logging = Logging.getInstance ();
 
         if (Login.getInstance ().isAuthenticated ()) {
             
@@ -31,6 +32,10 @@ public class Invoice {
 
             System.out.printf ("%56s----------%n", "");
             System.out.printf ("%56s€ %8.2f%n", "", totalPrice);
+            logging.printLog (String.format ("Er is een factuur opgesteld met nummer %d", nextInvoiceNumber));
+        }
+        else {
+            logging.printLog ("Gebruiker is niet ingelogd en kan daarom geen klant aanmaken");
         }
     }
 }
