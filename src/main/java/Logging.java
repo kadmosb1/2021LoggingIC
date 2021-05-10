@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Logging {
 
+    private static Logging singleton;
     private File logFile;
 
     private String getFormattedDate () {
@@ -16,6 +17,19 @@ public class Logging {
 
     private String getFormattedDateAndTime() {
         return getFormattedDate () + LocalDateTime.now ().format (DateTimeFormatter.ofPattern (" hh:mm:ss"));
+    }
+
+    private Logging () {
+        logFile = new File ("src\\main\\resources\\Logging\\" + getFormattedDate () + ".log");
+    }
+
+    public static Logging getInstance () {
+
+        if (singleton == null) {
+            singleton = new Logging ();
+        }
+
+        return singleton;
     }
 
     public void printLog (String logString) {
@@ -29,8 +43,7 @@ public class Logging {
             }
 
             String pre = String.format ("%-19s ", getFormattedDateAndTime());
-            // TODO: getUserName bestaat nog niet in User en kan dus nog niet worden aangeroepen.
-            // pre += String.format ("%-20s ", Login.getInstance ().getUserName ());
+            pre += String.format ("%-20s ", Login.getInstance ().getUserName ());
             writer.append (String.format ("%s%s%n", pre, logString));
             writer.close ();
         }

@@ -24,16 +24,15 @@ public class Login {
         return singleton;
     }
 
-    private boolean isAuthenticated (String name) {
+    private User getUser (String name) {
 
         for (User user : users) {
             if (user.getName ().equals (name)) {
-                loggedInUser = user;
-                return true;
+                return user;
             }
         }
 
-        return false;
+        return null;
     }
 
     private boolean userIsAuthenticated () {
@@ -48,6 +47,7 @@ public class Login {
         else {
 
             Scanner scanner = new Scanner(System.in);
+            Logging logging = Logging.getInstance ();
 
             for (int i = 0; i < 3; i++) {
 
@@ -58,12 +58,17 @@ public class Login {
                 String password = scanner.nextLine();
                 System.out.println ("=================");
 
-                if (isAuthenticated (userName) && loggedInUser.passwordIsCorrect(password)) {
+                User user = getUser(userName);
+
+                if (user != null && user.passwordIsCorrect(password)) {
+                    this.loggedInUser = user;
+                    logging.printLog ("Gebruiker is ingelogd");
                     System.out.println ();
                     return true;
                 }
 
                 System.out.println ("De combinatie van gebruikersnaam en password is niet OK.");
+                logging.printLog (String.format ("Het is gebruiker met gebruikersnaam '%s' niet gelukt om in te loggen", userName));
             }
 
             System.out.println ("=================");
@@ -71,5 +76,14 @@ public class Login {
             return false;
         }
 
+    }
+
+    public String getUserName () {
+
+        if (loggedInUser == null) {
+            return "";
+        }
+
+        return loggedInUser.getName ();
     }
 }
